@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-to-salesforce:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       # 1. Checkout repository
