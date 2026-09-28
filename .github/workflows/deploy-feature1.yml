@@ -20,17 +20,25 @@ jobs:
           npm install --global @salesforce/cli
           sf --version
 
+      # 3. Authenticate to Salesforce using SFDX Auth URL
       - name: Authenticate to Salesforce
         run: |
-        echo "${{ secrets.SFDX_AUTH_URL }}" > sfdx_auth_url.txt
-        sf org login sfdx-url \
-        --sfdx-url-file sfdx_auth_url.txt \
-        --alias GitHubDeveloper \
-        --set-default
-        rm -f sfdx_auth_url.txt
-         
-        - name: Deploy to Salesforce
+          echo "${{ secrets.SFDX_AUTH_URL }}" > sfdx_auth_url.txt
+          sf org login sfdx-url \
+            --sfdx-url-file sfdx_auth_url.txt \
+            --alias GitHubDeveloper \
+            --set-default
+          rm -f sfdx_auth_url.txt
+
+      # 4. Verify Salesforce authentication
+      - name: Verify Salesforce Org
         run: |
-        sf project deploy start \
-        --source-dir force-app \
-        --target-org GitHubDeveloper
+          sf org display --target-org GitHubDeveloper
+
+      # 5. Deploy to Salesforce
+      - name: Deploy to Salesforce
+        run: |
+          sf project deploy start \
+            --source-dir force-app \
+            --target-org GitHubDeveloper \
+            --wait 30
