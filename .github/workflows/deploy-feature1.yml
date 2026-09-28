@@ -20,32 +20,17 @@ jobs:
           npm install --global @salesforce/cli
           sf --version
 
-      # 3. Create JWT private key from GitHub Secret
-      - name: Create JWT Key File
-        run: |
-          echo "${{ secrets.SF_JWT_PRIVATE_KEY }}" > server.key
-          chmod 600 server.key
-
-      # 4. Authenticate to Salesforce
       - name: Authenticate to Salesforce
         run: |
-          sf org login jwt \
-            --client-id "${{ secrets.SF_CONSUMER_KEY }}" \
-            --jwt-key-file server.key \
-            --username "${{ secrets.SF_USERNAME }}" \
-            --instance-url "${{ secrets.SF_INSTANCE_URL }}" \
-            --alias targetOrg \
-            --set-default
-
-      # 5. Verify authentication
-      - name: Verify Salesforce Org
+        echo "${{ secrets.SFDX_AUTH_URL }}" > sfdx_auth_url.txt
+        sf org login sfdx-url \
+        --sfdx-url-file sfdx_auth_url.txt \
+        --alias GitHubDeveloper \
+        --set-default
+        rm -f sfdx_auth_url.txt
+         
+        - name: Deploy to Salesforce
         run: |
-          sf org display --target-org targetOrg
-
-      # 6. Deploy Salesforce metadata
-      - name: Deploy to Salesforce
-        run: |
-          sf project deploy start \
-            --source-dir force-app \
-            --target-org targetOrg \
-            --wait 30
+        sf project deploy start \
+        --source-dir force-app \
+        --target-org GitHubDeveloper
