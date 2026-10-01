@@ -1,6 +1,5 @@
-public  class AccountController {   
-    
+public  class AccountController { 
     public static List<Account> getAccounts() {
-        return [SELECT Id, Name FROM Account limit 5];
+        return [SELECT Id, Name FROM Account limit 2];
     }
 }
