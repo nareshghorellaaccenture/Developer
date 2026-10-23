@@ -1,7 +1,7 @@
 name: Deploy feature1 to Salesforce
 
 on:
-  push:
+  workflow_dispatch:
     branches:
       - feature1
 
