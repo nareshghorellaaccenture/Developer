@@ -1,10 +1,7 @@
 name: Deploy feature1 to Salesforce
 
 on:
-  workflow_dispatch:
-    branches:
-      - feature1
-
+  workflow_dispatch:   
 jobs:
   deploy-to-salesforce:
     runs-on: ubuntu-24.04
