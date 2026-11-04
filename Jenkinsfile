@@ -8,6 +8,26 @@ pipeline {
 
     stages {
 
+        stage('Install Prerequisites') {
+            steps {
+                sh '''
+                set -x
+                export SF_CONFIG_DIR="$SF_CONFIG_DIR"
+                export SFDX_CONFIG_DIR="$SFDX_CONFIG_DIR"
+                mkdir -p "$SF_CONFIG_DIR" "$SFDX_CONFIG_DIR"
+                if ! command -v sf > /dev/null 2>&1; then
+                echo "Installing Salesforce CLI..."
+                npm install --global @salesforce/cli
+                else
+                echo "Salesforce CLI already installed: $(sf --version)"
+                fi
+                # Install or update plugins
+                sf plugins install @salesforce/sfdx-scanner@3.16.0 || echo "Plugin already installed"
+                sf plugins update || true
+                '''
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
