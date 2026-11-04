@@ -12,15 +12,7 @@ pipeline {
             steps {
                 checkout scm
             }
-        }
-
-        stage('Check Salesforce CLI') {
-            steps {
-                bat '''
-                    sf --version
-                '''
-            }
-        }
+        }       
 
         stage('Authenticate Salesforce') {
             steps {
