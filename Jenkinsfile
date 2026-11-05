@@ -10,6 +10,8 @@ pipeline {
 
         stage('Install Prerequisites') {
             steps {
+                echo 'Started Install Prerequisites.'
+
                 sh '''
                 set -x
                 export SF_CONFIG_DIR="$SF_CONFIG_DIR"
