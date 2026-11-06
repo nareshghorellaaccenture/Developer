@@ -6,18 +6,56 @@ on:
 jobs:
   deploy-to-salesforce:
     runs-on: ubuntu-24.04
-
+    # Map branch -> GitHub Environment
+    environment:
+      name: ${{ github.ref_name == 'main' && 'PROD' ||
+                github.ref_name == 'uat' && 'UAT' ||
+                github.ref_name == 'qa' && 'QA' ||
+                'DEV' 
+             }}
     steps:
+
+      # -------------------------------------------------------
+      # Display pipeline information
+      # -------------------------------------------------------
+      - name: Display deployment information
+        run: |
+          echo "=========================================="
+          echo " Salesforce Deployment Pipeline Started"
+          echo "=========================================="
+          echo "Branch     : ${{ github.ref_name }}"
+          echo "Repository : ${{ github.repository }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "=========================================="
+
       # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      # -------------------------------------------------------
+      # Check Salesforce CLI
+      # -------------------------------------------------------
+      - name: Check Salesforce CLI
+        id: check-sf
+        shell: bash
+        run: |
+          if command -v sf >/dev/null 2>&1; then
+            echo "Salesforce CLI is already installed."
+            sf --version
+            echo "installed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Salesforce CLI is not installed."
+            echo "installed=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # 2. Install Salesforce CLI
       - name: Install Salesforce CLI
+        if: steps.check-sf.outputs.installed != 'true'
         run: |
+          echo "Installing Salesforce CLI..."
           npm install --global @salesforce/cli
-          sf --version
-
+          echo "Salesforce CLI installation completed."
+        
       # 3. Authenticate to Salesforce using SFDX Auth URL
       - name: Authenticate to Salesforce
         run: |
