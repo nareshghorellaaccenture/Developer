@@ -1,0 +1,30 @@
+on:
+ push:
+    branches:
+      - feature1
+ 
+permissions:
+  contents: read
+  security-events: write
+ 
+jobs:
+  apex-scan:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+ 
+      - name: Run Salesforce Code Analyzer
+        uses: forcedotcom/run-code-analyzer@v2
+        with:
+          run-arguments: |
+            --workspace .
+            --view detail
+            --output-file sf-results.sarif
+ 
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: sf-results.sarif
+          category: salesforce-apex
