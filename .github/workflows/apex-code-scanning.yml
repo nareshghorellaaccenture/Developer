@@ -20,4 +20,11 @@ jobs:
         with:
           run-command: run
           run-arguments: --normalize-severity
-          results-artifact-name: code-analyzer-results
+          results-artifact-name: code-analyzer-results\
+
+      - name: SonarQube Analysis
+        uses: mammothb/sonarqube-ce@v1
+        with:
+          reports-scopes: '["overall","new"]'
+          generate-pr-comment: 'true'
+          github-token: ${{ secrets.TestTokenGit }}
