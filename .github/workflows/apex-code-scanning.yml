@@ -14,7 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
- 
+      
+      # Running code scanning through salesforce code analyzer
       - name: Run Salesforce Code Analyzer
         uses: forcedotcom/run-code-analyzer@v1.0.0
         with:
@@ -22,6 +23,7 @@ jobs:
           run-arguments: --normalize-severity
           results-artifact-name: code-analyzer-results
 
+      # Running code scanning through sonar qube
       - name: SonarQube Analysis
         uses: mammothb/sonarqube-ce@v1
         with:
